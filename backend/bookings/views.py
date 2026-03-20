@@ -57,10 +57,10 @@ def send_mqtt_device_none(device_id):
     """
     ส่งคำสั่งรีเซ็ตเมื่อ remove pairing:
     - topic: device/{device_id}/control
-    - payload: {"device_id":"none"}
+    - payload: {"driver_id":"none"}
     """
     topic = f"device/{device_id}/control"
-    payload = json.dumps({"device_id": "none"})
+    payload = json.dumps({"driver_id": "none"})
     return publish_mqtt(topic, payload)
 
 # ฟังก์ชันดึงข้อมูลทั้งหมด และสร้างการจองใหม่
