@@ -11,17 +11,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ฟังก์ชันสำหรับส่ง MQTT ไปหา Pi
-def send_mqtt_config(device_id, user_id):
-    topic = f"device/{device_id}/control"
-    payload = json.dumps({
-        "driver_id": user_id
-    })
-    try:
-        broker = os.getenv("MQTT_BROKER_URL")
-        port = int(os.getenv("MQTT_BROKER_PORT", 8883))
-        user = os.getenv("MQTT_BROKER_USERNAME")
-        password = os.getenv("MQTT_BROKER_PASSWORD")
+def publish_mqtt(topic, payload):
+    broker = os.getenv("MQTT_BROKER_URL")
+    port = int(os.getenv("MQTT_BROKER_PORT", 8883))
+    user = os.getenv("MQTT_BROKER_USERNAME")
+    password = os.getenv("MQTT_BROKER_PASSWORD")
 
+    try:
         client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         if user and password:
             client.username_pw_set(user, password)
@@ -48,6 +44,24 @@ def send_mqtt_config(device_id, user_id):
     except Exception as e:
         print(f"MQTT Error: {e}")
         return False
+
+def send_mqtt_config(device_id, user_id):
+    topic = f"device/{device_id}/control"
+    payload = json.dumps({
+        "driver_id": user_id
+    })
+    return publish_mqtt(topic, payload)
+
+
+def send_mqtt_device_none(device_id):
+    """
+    ส่งคำสั่งรีเซ็ตเมื่อ remove pairing:
+    - topic: device/{device_id}/control
+    - payload: {"device_id":"none"}
+    """
+    topic = f"device/{device_id}/control"
+    payload = json.dumps({"device_id": "none"})
+    return publish_mqtt(topic, payload)
 
 # ฟังก์ชันดึงข้อมูลทั้งหมด และสร้างการจองใหม่
 @api_view(['GET', 'POST'])
@@ -78,7 +92,12 @@ def booking_list_create(request):
 def booking_delete(request, pk):
     try:
         booking = Booking.objects.get(pk=pk)
+        device_id = booking.device.device_id
+        mqtt_ok = send_mqtt_device_none(device_id)
         booking.delete()
-        return Response({"message": "Pairing removed successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"message": "Pairing removed successfully", "mqtt_published": mqtt_ok},
+            status=status.HTTP_200_OK,
+        )
     except Booking.DoesNotExist:
         return Response({"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND)
