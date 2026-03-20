@@ -16,7 +16,7 @@ const DeviceManagement = () => {
 
   const fetchDevices = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/devices/');
+      const response = await axios.get('http://3.26.163.23/api/devices/');
       setDevices(response.data);
     } catch (error) {
       console.error("Error fetching devices:", error);
@@ -34,10 +34,10 @@ const DeviceManagement = () => {
     }
     try {
       if (selectedId) {
-        await axios.put(`http://127.0.0.1:8000/api/devices/${selectedId}/`, formData);
+        await axios.put(`http://3.26.163.23/api/devices/${selectedId}/`, formData);
         Swal.fire('Success', 'Device updated successfully!', 'success');
       } else {
-        await axios.post('http://127.0.0.1:8000/api/devices/', formData);
+        await axios.post('http://3.26.163.23/api/devices/', formData);
         Swal.fire('Success', 'Device added successfully!', 'success');
       }
       setFormData({ device_id: '', carplate: '', mac_address: '' });
@@ -66,7 +66,7 @@ const DeviceManagement = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/devices/${selectedId}/`);
+        await axios.delete(`http://3.26.163.23/api/devices/${selectedId}/`);
         Swal.fire('Deleted!', 'Device removed!', 'success');
         setSelectedId(null);
         fetchDevices();

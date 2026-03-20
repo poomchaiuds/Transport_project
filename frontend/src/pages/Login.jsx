@@ -24,8 +24,8 @@ const Login = () => {
       const fb_uid = userCredential.user.uid;
 
       // ขั้นตอนที่ ข: ส่ง fb_uid ไปถาม Django ว่า User คนนี้มี Role อะไร
-      // เปลี่ยน URL เป็น API ของคุณ (เช่น http://127.0.0.1:8000/api/user-info/)
-      const response = await axios.get(`http://127.0.0.1:8000/api/user-info/${fb_uid}/`);
+      // เปลี่ยน URL เป็น API ของคุณ (เช่น http://3.26.163.23/api/user-info/)
+      const response = await axios.get(`http://3.26.163.23/api/user-info/${fb_uid}/`);
 
       if (response.data) {
         // ขั้นตอนที่ ค: เก็บข้อมูลลง localStorage (Low Effort)

@@ -27,9 +27,9 @@ const PairDriver = () => {
   const fetchData = async () => {
     try {
       const [usersRes, devicesRes, bookingsRes] = await Promise.all([
-        axios.get('http://127.0.0.1:8000/api/users/'),
-        axios.get('http://127.0.0.1:8000/api/devices/'),
-        axios.get('http://127.0.0.1:8000/api/bookings/')
+        axios.get('http://3.26.163.23/api/users/'),
+        axios.get('http://3.26.163.23/api/devices/'),
+        axios.get('http://3.26.163.23/api/bookings/')
       ]);
       setDrivers(usersRes.data);
       setDevices(devicesRes.data);
@@ -57,7 +57,7 @@ const PairDriver = () => {
     }
 
     try {
-      await axios.post('http://127.0.0.1:8000/api/bookings/', {
+      await axios.post('http://3.26.163.23/api/bookings/', {
         user: userForPair,    
         device: selectedDevice 
       });
@@ -97,7 +97,7 @@ const PairDriver = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/bookings/${selectedPairId}/`);
+        await axios.delete(`http://3.26.163.23/api/bookings/${selectedPairId}/`);
         Swal.fire('Deleted!', 'Pairing removed!', 'success');
         setSelectedPairId(null); // ล้างค่าที่เลือก
         fetchData();

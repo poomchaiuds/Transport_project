@@ -33,7 +33,7 @@ const Register = () => {
     role: formData.role
 };
 
-await axios.post('http://127.0.0.1:8000/api/register/', djangoData);
+await axios.post('http://3.26.163.23/api/register/', djangoData);
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful!',

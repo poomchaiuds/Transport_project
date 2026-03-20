@@ -23,13 +23,13 @@ const AdminDriverView = ({ driverId }) => {
     const fetchAll = async () => {
       try {
         // Device pairing
-        const resBooking = await axios.get('http://127.0.0.1:8000/api/bookings/');
+        const resBooking = await axios.get('http://3.26.163.23/api/bookings/');
         const myPair = (resBooking.data || []).find(p => String(p.user_id_val) === String(driverId));
         if (myPair) {
           const currentDeviceId = myPair.device_id_val || 'Inactive';
           setDeviceId(currentDeviceId);
           if (currentDeviceId !== 'Inactive') {
-            const resDevice = await axios.get('http://127.0.0.1:8000/api/devices/');
+            const resDevice = await axios.get('http://3.26.163.23/api/devices/');
             const myDevice = (resDevice.data || []).find(d => String(d.device_id) === String(currentDeviceId));
             if (myDevice) setDeviceStatus(myDevice.status);
           }
@@ -44,14 +44,14 @@ const AdminDriverView = ({ driverId }) => {
 
     const fetchCo2 = async () => {
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/api/devices/driver/${driverId}/latest-co2/`);
+        const res = await axios.get(`http://3.26.163.23/api/devices/driver/${driverId}/latest-co2/`);
         setCo2Value(res.data.co2);
       } catch (e) { /* ignore */ }
     };
 
     const fetchHistory = async () => {
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/api/devices/driver/${driverId}/prediction-history/`);
+        const res = await axios.get(`http://3.26.163.23/api/devices/driver/${driverId}/prediction-history/`);
         setPredictionHistory(res.data.map(item => ({
           ...item,
           time: new Date(item.timestamp).toLocaleTimeString('th-TH'),

@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchActiveDrivers = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/bookings/');
+        const res = await axios.get('http://3.26.163.23/api/bookings/');
         setActiveDrivers(res.data || []);
       } catch (error) {
         console.error('Error fetching active drivers:', error);
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
     };
     const fetchAlertLogs = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/devices/alert-logs/');
+        const res = await axios.get('http://3.26.163.23/api/devices/alert-logs/');
         setAlertLogs(res.data || []);
       } catch (error) {
         console.error('Error fetching alert logs:', error);

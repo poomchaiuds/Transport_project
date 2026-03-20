@@ -29,7 +29,7 @@ const DriverDashboard = () => {
         }
 
         // Fetch bookings
-        const resBooking = await axios.get('http://127.0.0.1:8000/api/bookings/');
+        const resBooking = await axios.get('http://3.26.163.23/api/bookings/');
         const pairings = resBooking.data || [];
         const myPair = pairings.find((p) => String(p.user_id_val) === String(userId));
 
@@ -46,7 +46,7 @@ const DriverDashboard = () => {
 
         // Fetch device status
         if (currentDeviceId !== 'Inactive') {
-          const resDevice = await axios.get('http://127.0.0.1:8000/api/devices/');
+          const resDevice = await axios.get('http://3.26.163.23/api/devices/');
           const devices = resDevice.data || [];
           const myDevice = devices.find((d) => String(d.device_id) === String(currentDeviceId));
           if (myDevice) {
@@ -67,7 +67,7 @@ const DriverDashboard = () => {
     const fetchCo2 = async () => {
       if (!userId) return;
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/api/devices/driver/${userId}/latest-co2/`);
+        const res = await axios.get(`http://3.26.163.23/api/devices/driver/${userId}/latest-co2/`);
         setCo2Value(res.data.co2);
       } catch (err) {
         console.error('Error fetching CO2:', err);
@@ -77,7 +77,7 @@ const DriverDashboard = () => {
     const fetchPredictionHistory = async () => {
       if (!userId) return;
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/api/devices/driver/${userId}/prediction-history/`);
+        const res = await axios.get(`http://3.26.163.23/api/devices/driver/${userId}/prediction-history/`);
         const formattedData = res.data.map(item => {
           const date = new Date(item.timestamp);
           return {
@@ -116,7 +116,7 @@ const DriverDashboard = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/bookings/${pairId}/`);
+        await axios.delete(`http://3.26.163.23/api/bookings/${pairId}/`);
         setDeviceId('Inactive');
         setPairId(null);
         setDeviceStatus('offline');
@@ -131,7 +131,7 @@ const DriverDashboard = () => {
   const handleToggleStatus = async () => {
     if (deviceId === 'Inactive') return;
     try {
-      const res = await axios.post(`http://127.0.0.1:8000/api/devices/${deviceId}/toggle-status/`);
+      const res = await axios.post(`http://3.26.163.23/api/devices/${deviceId}/toggle-status/`);
       setDeviceStatus(res.data.status);
     } catch (error) {
       console.error('Error toggling device status:', error);
@@ -170,7 +170,7 @@ const DriverDashboard = () => {
     if (drowsyPct >= 50 && alertedMinuteRef.current !== latest.minute) {
       alertedMinuteRef.current = latest.minute;
       setAlertActive(true);
-      axios.post(`http://127.0.0.1:8000/api/devices/${deviceId}/alert/`, {
+      axios.post(`http://3.26.163.23/api/devices/${deviceId}/alert/`, {
         driver_id: userId,
         driver_name: driverName
       })
