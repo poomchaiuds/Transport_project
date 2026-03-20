@@ -8,10 +8,9 @@ import json
 
 # ฟังก์ชันสำหรับส่ง MQTT ไปหา Pi
 def send_mqtt_config(device_id, user_id):
-    topic = f"devices/{device_id}/config"
+    topic = f"device/{device_id}/control"
     payload = json.dumps({
-        "action": "update_user",
-        "user_id": user_id
+        "driver_id": user_id
     })
     try:
         publish.single(topic, payload, hostname="broker.emqx.io")
