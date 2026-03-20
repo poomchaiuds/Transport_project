@@ -18,7 +18,7 @@ def send_mqtt_config(device_id, user_id):
     })
     try:
         broker = os.getenv("MQTT_BROKER_URL", "broker.emqx.io")
-        port = int(os.getenv("MQTT_BROKER_PORT", 1883))
+        port = int(os.getenv("MQTT_BROKER_PORT", 8883))
         user = os.getenv("MQTT_BROKER_USERNAME")
         password = os.getenv("MQTT_BROKER_PASSWORD")
         
