@@ -5,6 +5,10 @@ from .models import Booking
 from .serializers import BookingSerializer
 import paho.mqtt.publish as publish
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ฟังก์ชันสำหรับส่ง MQTT ไปหา Pi
 def send_mqtt_config(device_id, user_id):
@@ -13,8 +17,17 @@ def send_mqtt_config(device_id, user_id):
         "driver_id": user_id
     })
     try:
-        publish.single(topic, payload, hostname="broker.emqx.io")
-        print(f"MQTT Sent to {topic}: {payload}")
+        broker = os.getenv("MQTT_BROKER_URL", "broker.emqx.io")
+        port = int(os.getenv("MQTT_BROKER_PORT", 1883))
+        user = os.getenv("MQTT_BROKER_USERNAME")
+        password = os.getenv("MQTT_BROKER_PASSWORD")
+        
+        auth = None
+        if user and password:
+            auth = {'username': user, 'password': password}
+
+        publish.single(topic, payload, hostname=broker, port=port, auth=auth)
+        print(f"MQTT Sent to {topic}: {payload} at {broker}:{port}")
     except Exception as e:
         print(f"MQTT Error: {e}")
 
