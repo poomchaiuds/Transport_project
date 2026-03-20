@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Booking
 from .serializers import BookingSerializer
-import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 import json
 import os
 from dotenv import load_dotenv
@@ -17,19 +17,37 @@ def send_mqtt_config(device_id, user_id):
         "driver_id": user_id
     })
     try:
-        broker = os.getenv("MQTT_BROKER_URL", "broker.emqx.io")
+        broker = os.getenv("MQTT_BROKER_URL")
         port = int(os.getenv("MQTT_BROKER_PORT", 8883))
         user = os.getenv("MQTT_BROKER_USERNAME")
         password = os.getenv("MQTT_BROKER_PASSWORD")
-        
-        auth = None
-        if user and password:
-            auth = {'username': user, 'password': password}
 
-        publish.single(topic, payload, hostname=broker, port=port, auth=auth)
-        print(f"MQTT Sent to {topic}: {payload} at {broker}:{port}")
+        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        if user and password:
+            client.username_pw_set(user, password)
+
+        # ให้สอดคล้องกับโค้ดใน devices/views.py (TLS สำหรับพอร์ต 8883)
+        use_tls_env = os.getenv("MQTT_BROKER_USE_TLS")
+        if use_tls_env is not None:
+            use_tls = use_tls_env.lower() in ("1", "true", "yes", "y")
+        else:
+            use_tls = port == 8883
+
+        if use_tls:
+            client.tls_set()
+
+        client.connect(broker, port, 60)
+        client.loop_start()
+        result = client.publish(topic, payload, qos=1)
+        result.wait_for_publish()
+        client.loop_stop()
+        client.disconnect()
+
+        print(f"MQTT Sent to {topic}: {payload} at {broker}:{port} (tls={use_tls})")
+        return True
     except Exception as e:
         print(f"MQTT Error: {e}")
+        return False
 
 # ฟังก์ชันดึงข้อมูลทั้งหมด และสร้างการจองใหม่
 @api_view(['GET', 'POST'])
@@ -45,12 +63,14 @@ def booking_list_create(request):
             booking = serializer.save()
             
             # ส่ง MQTT ทันทีที่จองสำเร็จ
-            send_mqtt_config(
+            mqtt_ok = send_mqtt_config(
                 booking.device.device_id,
                 booking.user.userid
             )
             
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_data = serializer.data
+            response_data["mqtt_published"] = mqtt_ok
+            return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ฟังก์ชันลบการจับคู่ (สำหรับปุ่ม Remove)
