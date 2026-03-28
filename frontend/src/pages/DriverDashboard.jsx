@@ -103,7 +103,7 @@ const DriverDashboard = () => {
 
   const handleRemoveDevice = async () => {
     if (!pairId) return;
-    
+
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "You want to remove this device pairing?",
@@ -151,7 +151,7 @@ const DriverDashboard = () => {
     const byMinute = {};
     predictionHistory.forEach(item => {
       const d = new Date(item.timestamp);
-      const key = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+      const key = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
       if (!byMinute[key]) byMinute[key] = { minute: key, active: 0, drowsy: 0 };
       if (item.risk_level === 'active') byMinute[key].active += 1;
       else byMinute[key].drowsy += 1;
@@ -238,7 +238,7 @@ const DriverDashboard = () => {
             {/* Device Info Card — white theme */}
             <div className="rounded-[20px] overflow-hidden shadow-md border border-gray-100" style={{ background: '#ffffff' }}>
               <div className="px-5 pt-4 pb-3 flex items-center gap-2 border-b border-gray-100" style={{ background: 'linear-gradient(90deg,#f0f4ff,#f0fdf4)' }}>
-                <p className="text-gray-700 font-bold text-sm tracking-widest uppercase">Device Info</p>
+                <p className="text-gray-700 font-bold text-sm tracking-widest uppercase">Driver Info</p>
               </div>
               <div className="px-5 py-4 space-y-3">
                 <div className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
@@ -401,8 +401,8 @@ const DriverDashboard = () => {
                 </ResponsiveContainer>
               ) : (
                 <div className="flex flex-col items-center gap-2 text-gray-400">
-                <span className="text-sm">No prediction data for this driver.</span>
-              </div>
+                  <span className="text-sm">No prediction data for this driver.</span>
+                </div>
               )}
             </div>
           </div>
