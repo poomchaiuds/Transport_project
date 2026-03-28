@@ -235,7 +235,7 @@ const DriverDashboard = () => {
         {/* เนื้อหาหลักเดิม แปลงเป็น Tailwind คร่าว ๆ ไว้ก่อนก็ได้ แต่ตามโจทย์หลักคือ Navbar */}
         <div className="flex-1 flex px-10 py-10 gap-8">
           <div className="w-[350px] space-y-4">
-            {/* Device Info Card — white theme */}
+            {/* Driver Info Card — white theme */}
             <div className="rounded-[20px] overflow-hidden shadow-md border border-gray-100" style={{ background: '#ffffff' }}>
               <div className="px-5 pt-4 pb-3 flex items-center gap-2 border-b border-gray-100" style={{ background: 'linear-gradient(90deg,#f0f4ff,#f0fdf4)' }}>
                 <p className="text-gray-700 font-bold text-sm tracking-widest uppercase">Driver Info</p>
